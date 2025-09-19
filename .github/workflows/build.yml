@@ -24,7 +24,7 @@ jobs:
               bash openssh-client git tar libcurl rsync \
               postgresql-dev \
               nodejs \
-              tzdata libcurl curl-dev libxml2 libxml2-dev gcc make \
+              tzdata libcurl curl-dev libxml2 libxml2-dev yaml-dev gcc make \
               sqlite sqlite-dev sqlite-libs \
               imagemagick \
               ffmpeg x264 x265 libvpx libtheora \
@@ -43,6 +43,7 @@ jobs:
         shell: bash
         run: |
           bundle config path vendor/bundle
+          bundle config build.ovirt-engine-sdk "--with-cflags='-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration'"
           bundle config set with 'development test'
           bundle install --jobs 16 --retry 3
       - name: Runs tests
