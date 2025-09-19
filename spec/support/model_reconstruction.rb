@@ -6,7 +6,7 @@ module ModelReconstruction
 
     klass.class_eval do
       include Paperclip::Glue
-      serialize :processed_styles, Array
+      serialize :processed_styles, type: Array
     end
 
     klass.reset_column_information

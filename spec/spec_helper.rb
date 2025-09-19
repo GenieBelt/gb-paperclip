@@ -88,7 +88,6 @@ Dir[File.join(ROOT, 'spec', 'support', '**', '*.rb')].sort.each { |f| require f 
 FakeRails.env = 'test'
 FakeRails.root = Pathname.new(ROOT).join('tmp')
 Rails = FakeRails
-ActiveSupport::Deprecation.silenced = true
 
 RSpec.configure do |config|
   config.include Assertions
@@ -103,7 +102,7 @@ RSpec.configure do |config|
     rebuild_model
   end
   config.after(:each) do
-    ActiveRecord::Base.clear_reloadable_connections!
+    ActiveRecord::Base.connection_handler.clear_reloadable_connections!
   end
   config.after(:all) do
     FileUtils.rm_r Pathname.new(ROOT).join('tmp')
