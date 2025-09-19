@@ -6,8 +6,6 @@ on:
 env:
   RACK_ENV: test
   GEM_HOST: https://rubygems.pkg.github.com/letsbuilders
-  ImageOS: ubuntu20
-  BUNDLER_VERSION: 2.3.12
 jobs:
   release:
     name: Run test
@@ -17,7 +15,7 @@ jobs:
       SIMPLECOV: json
       ImageOS: ubuntu20
     container:
-      image: ruby:3.0-alpine
+      image: ruby:3.4-alpine
     steps:
       - name: Install dependencies
         run: |
@@ -31,12 +29,11 @@ jobs:
               imagemagick \
               ffmpeg x264 x265 libvpx libtheora \
               file
-          gem install bundler:${BUNDLER_VERSION}
           git config --global --add safe.directory '*'
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache gems
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-build-${{ hashFiles('**/Gemfile.lock') }}
