@@ -23,11 +23,11 @@ Gem::Specification.new do |s|
   s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/letsbuilders'
   s.metadata['github_repo'] = 'ssh://github.com/letsbuilders/gb-paperclip'
 
-  s.required_ruby_version = '>= 2.7.0'
+  s.required_ruby_version = '>= 3.0.0'
 
   s.add_runtime_dependency 'gb_dispatch', '>=0.1.1'
   s.add_runtime_dependency 'kt-paperclip', '>=6.0'
-  s.add_development_dependency('activerecord', '>=5.0')
+  s.add_development_dependency('activerecord', '>=7.0')
   s.add_development_dependency('appraisal')
   s.add_development_dependency('aws-sdk-core')
   s.add_development_dependency('aws-sdk-glacier')
@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('bourne')
   s.add_development_dependency('bundler')
   s.add_development_dependency('fakeweb')
-  s.add_development_dependency('fog', '~> 1.0')
+  s.add_development_dependency('fog', '~> 2.0')
   s.add_development_dependency('generator_spec')
   s.add_development_dependency('launchy')
   s.add_development_dependency('nokogiri')

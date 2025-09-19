@@ -171,7 +171,7 @@ module Paperclip
           rescue Exception => e
             Thread.current[:error] = e
           ensure
-            ActiveRecord::Base.clear_active_connections!
+            ActiveRecord::Base.connection_handler.clear_active_connections!
           end
         end).abort_on_exception = false
         thr
