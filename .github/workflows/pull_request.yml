@@ -38,6 +38,13 @@ jobs:
           key: ${{ runner.os }}-gems-test-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-test-${{ matrix.ruby }}-
+      - name: Update Gemfile.lock
+        if: matrix.ruby == '3.0' || matrix.ruby == '3.1'
+        run: |
+          cp -f Gemfile.lock_3.0 Gemfile.lock
+      - name: Install ovirt-engine-sdk
+        run: |
+          gem install ovirt-engine-sdk -v4.6.0 -- --with-cflags="-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration"
       - name: Install gems
         run: |
           bundle config path vendor/bundle
