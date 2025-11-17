@@ -5,8 +5,7 @@ on:
       - released
 env:
   RACK_ENV: test
-  GEM_HOST: https://rubygems.pkg.github.com/letsbuilders
-  ImageOS: ubuntu20
+  GEM_HOST: https://rubygems.pkg.github.com/geniebelt
   BUNDLER_VERSION: 2.3.12
 jobs:
   release:
@@ -15,7 +14,6 @@ jobs:
     timeout-minutes: 10
     env:
       SIMPLECOV: json
-      ImageOS: ubuntu20
     container:
       image: ruby:3.0-alpine
     steps:
@@ -34,9 +32,9 @@ jobs:
           gem install bundler:${BUNDLER_VERSION}
           git config --global --add safe.directory '*'
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Cache gems
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-build-${{ hashFiles('**/Gemfile.lock') }}
@@ -74,7 +72,7 @@ jobs:
           gem install yard
           yardoc --protected --private --embed-mixins --backtrace --no-progress --one-page
       - name: Upload docs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: docs
           path: doc/index.html

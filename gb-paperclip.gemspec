@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.name        = 'gb_paperclip'
   s.version     = GBPaperclip::VERSION
   s.authors     = ['Kacper Kawecki']
-  s.email       = ['kacper@letsbuild.com']
-  s.homepage    = 'https://github.com/letsbuilders/gb-paperclip'
+  s.email       = ['kacper@geniebelt.com']
+  s.homepage    = 'https://github.com/geniebelt/gb-paperclip'
   s.summary     = 'GenieBelt Paperclip extensions'
   s.description = 'Extensions for paperclip'
   s.license     = 'GPL-2.0-or-later'
@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files lib`.split("\n") + ['README.md']
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
-  s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/letsbuilders'
-  s.metadata['github_repo'] = 'ssh://github.com/letsbuilders/gb-paperclip'
+  s.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/geniebelt'
+  s.metadata['github_repo'] = 'ssh://github.com/geniebelt/gb-paperclip'
 
   s.required_ruby_version = '>= 2.7.0'
 

@@ -34,9 +34,9 @@ jobs:
               file
           gem install bundler:${BUNDLER_VERSION}
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Cache gems
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-test-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile.lock') }}
@@ -57,8 +57,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           json-path: rspec_results.json
-      - name: Simplecov Report
-        uses: aki77/simplecov-report-action@v1
+      - uses: joshmfrankel/simplecov-check-action@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          failedThreshold: 70
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_file_coverage: 70
+          minimum_suite_coverage: 70
