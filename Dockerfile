@@ -7,11 +7,13 @@ RUN apk add --no-cache --update build-base \
                           nodejs \
                           tzdata libcurl curl-dev libxml2 libxml2-dev gcc make yaml-dev \
                           sqlite sqlite-dev sqlite-libs \
-                          imagemagick \
+                          imagemagick ghostscript \
                           ffmpeg x264 x265 libvpx libtheora \
                           file
 
 ENV APP_PATH /opt/project
+ARG GEMFILE=gemfiles/rails_8_1.gemfile
+ENV BUNDLE_GEMFILE=/opt/project/$GEMFILE
 
 # Different layer for gems installation
 WORKDIR $APP_PATH
