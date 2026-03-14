@@ -4,20 +4,36 @@ on:
   - workflow_dispatch
 env:
   RACK_ENV: test
-  BUNDLER_VERSION: 2.2.30
-  ImageOS: ubuntu20
 jobs:
   test:
     name: Run test
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.7', '3.0', '3.1' ]
+        ruby: [ '3.0', '3.1', '3.2', '3.3', '3.4', '4.0' ]
+        gemfile:
+          - 'gemfiles/rails_7_0.gemfile'
+          - 'gemfiles/rails_7_1.gemfile'
+          - 'gemfiles/rails_7_2.gemfile'
+          - 'gemfiles/rails_8_0.gemfile'
+          - 'gemfiles/rails_8_1.gemfile'
+        exclude:
+          # Rails 7.2+ requires Ruby >= 3.1
+          - { ruby: '3.0', gemfile: 'gemfiles/rails_7_2.gemfile' }
+          - { ruby: '3.0', gemfile: 'gemfiles/rails_8_0.gemfile' }
+          - { ruby: '3.0', gemfile: 'gemfiles/rails_8_1.gemfile' }
+          # Rails 8.0+ requires Ruby >= 3.2
+          - { ruby: '3.1', gemfile: 'gemfiles/rails_8_0.gemfile' }
+          - { ruby: '3.1', gemfile: 'gemfiles/rails_8_1.gemfile' }
+          # Ruby 4.0 only tested against latest Rails (8.x)
+          - { ruby: '4.0', gemfile: 'gemfiles/rails_7_0.gemfile' }
+          - { ruby: '4.0', gemfile: 'gemfiles/rails_7_1.gemfile' }
+          - { ruby: '4.0', gemfile: 'gemfiles/rails_7_2.gemfile' }
     env:
       SIMPLECOV: json
-      ImageOS: ubuntu20
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
     container: ruby:${{ matrix.ruby }}-alpine
     steps:
       - name: Install dependencies
@@ -27,26 +43,28 @@ jobs:
               bash openssh-client git tar \
               postgresql-dev \
               nodejs \
-              tzdata libcurl curl-dev libxml2 libxml2-dev gcc make \
+              tzdata libcurl curl-dev libxml2 libxml2-dev yaml-dev gcc make \
               sqlite sqlite-dev sqlite-libs \
-              imagemagick \
+              imagemagick ghostscript \
               ffmpeg x264 x265 libvpx libtheora \
               file
-          gem install bundler:${BUNDLER_VERSION}
+          gem install bundler
       - name: Checkout code
         uses: actions/checkout@v5
       - name: Cache gems
         uses: actions/cache@v4
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gems-test-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-test-${{ matrix.ruby }}-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles(format('{0}.lock', matrix.gemfile)) }}
           restore-keys: |
             ${{ runner.os }}-gems-test-${{ matrix.ruby }}-
       - name: Install gems
         run: |
+          git config --global --add safe.directory "$(pwd)"
           bundle config path vendor/bundle
+          bundle config force_ruby_platform true
+          bundle config build.ovirt-engine-sdk "--with-cflags='-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration'"
           bundle config set with 'development test'
-          bundle config set --local deployment 'true'
           bundle install --jobs 16 --retry 3
       - name: Runs tests
         run: |

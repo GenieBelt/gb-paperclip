@@ -317,7 +317,7 @@ describe Paperclip::Attachment do
       it 'any error' do
         Paperclip::FakeProcessor.raise_error = 'test error'
         expect(@attachment).to receive(:failed_processing).with(@style)
-        expect { @attachment.post_process_style(:thumb, @style) }.to raise_error
+        expect { @attachment.post_process_style(:thumb, @style) }.to raise_error(RuntimeError)
         Paperclip::FakeProcessor.raise_error = nil
       end
     end

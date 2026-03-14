@@ -301,7 +301,7 @@ describe Paperclip::VideoThumbnail do
       it 'avconv or ffprobe have wrong params' do
         expect(@attachment).to receive(:failed_processing).with(:test)
         allow(@thumb).to receive(:create_image).and_raise(Terrapin::ExitStatusError.new '')
-        expect { @thumb.make }.to raise_error
+        expect { @thumb.make }.to raise_error(Paperclip::Error)
       end
 
       it 'image magick error' do
@@ -323,8 +323,8 @@ describe Paperclip::VideoThumbnail do
 
       it 'throws any error' do
         expect(@attachment).to receive(:failed_processing).with(:test)
-        allow(@thumb).to receive(:create_image).with(anything).and_raise('test error')
-        expect { @thumb.make }.to raise_error
+        allow(@thumb).to receive(:create_image).and_raise('test error')
+        expect { @thumb.make }.to raise_error(RuntimeError)
       end
     end
   end

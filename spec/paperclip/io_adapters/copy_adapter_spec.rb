@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'base64'
 require 'gb_paperclip/paperclip/io_adapters/copy_adapter'
 
 describe Paperclip::CopyAdapter do
@@ -77,7 +78,7 @@ describe Paperclip::CopyAdapter do
 
       context 'file with multiple possible content type' do
         before do
-          allow(MIME::Types).to receive(:type_for).and_return([MIME::Type.new('image/x-png'), MIME::Type.new('image/png')])
+          allow(MIME::Types).to receive(:type_for).and_return([MIME::Type.new('content-type' => 'image/x-png'), MIME::Type.new('content-type' => 'image/png')])
           @subject = Paperclip::CopyAdapter.new(@original_adapter)
         end
 
