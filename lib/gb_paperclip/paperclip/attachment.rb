@@ -204,8 +204,7 @@ module Paperclip
           else
             ensure_is_created do
               @instance.lock!
-              @instance.update_attribute :processing, true
-              @instance.processed_styles ||= []
+              @instance.update_columns(processing: true, processed_styles: @instance.processed_styles || [])
             end
           end
         end

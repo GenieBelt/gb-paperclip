@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'base64'
 require 'gb_paperclip/paperclip/io_adapters/copy_adapter'
 
 describe Paperclip::CopyAdapter do
