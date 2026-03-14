@@ -13,6 +13,7 @@ jobs:
     timeout-minutes: 10
     env:
       SIMPLECOV: json
+      BUNDLE_GEMFILE: gemfiles/rails_8_1.gemfile
     container:
       image: ruby:3.4-alpine
     steps:
@@ -25,7 +26,7 @@ jobs:
               nodejs \
               tzdata libcurl curl-dev libxml2 libxml2-dev yaml-dev gcc make \
               sqlite sqlite-dev sqlite-libs \
-              imagemagick \
+              imagemagick ghostscript \
               ffmpeg x264 x265 libvpx libtheora \
               file
           git config --global --add safe.directory '*'
@@ -35,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gems-build-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-build-${{ hashFiles('gemfiles/rails_8_1.gemfile') }}-${{ hashFiles('gemfiles/rails_8_1.gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-build-
       - name: Install gems
