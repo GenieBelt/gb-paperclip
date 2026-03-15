@@ -50,9 +50,9 @@ jobs:
               file
           gem install bundler
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Cache gems
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-test-${{ matrix.ruby }}-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles(format('{0}.lock', matrix.gemfile)) }}
@@ -71,7 +71,8 @@ jobs:
           bundle exec rspec -f j -o rspec_results.json -f p
       - name: RSpec Report
         if: always()
-        uses: SonicGarden/rspec-report-action@v1
+        uses: SonicGarden/rspec-report-action@v6
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           json-path: rspec_results.json
