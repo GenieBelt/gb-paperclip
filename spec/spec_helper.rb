@@ -34,49 +34,11 @@ $LOAD_PATH << File.join(ROOT, 'lib')
 $LOAD_PATH << File.join(ROOT, 'lib', 'gb_paperclip')
 require File.join(ROOT, 'lib', 'gb_paperclip.rb')
 
-# Fix rails bug with not creating in memory database with '?cache=shared' option
-module ActiveRecord
-  module ConnectionHandling # :nodoc:
-    def sqlite3_connection(config)
-      config = config.symbolize_keys
-
-      # Require database.
-      raise ArgumentError, 'No database file specified. Missing argument: database' unless config[:database]
-
-      # Allow database path relative to Rails.root, but only if the database
-      # path is not the special path that tells sqlite to build a database only
-      # in memory.
-      unless config[:database] =~ /:memory/
-        config[:database] = File.expand_path(config[:database], Rails.root) if defined?(Rails.root)
-        dirname = File.dirname(config[:database])
-        Dir.mkdir(dirname) unless File.directory?(dirname)
-      end
-
-      db = SQLite3::Database.new(
-        config[:database].to_s,
-        results_as_hash: true
-      )
-
-      if config[:timeout]
-        db.busy_timeout(ConnectionAdapters::SQLite3Adapter.type_cast_config_to_integer(config[:timeout]))
-      end
-
-      ConnectionAdapters::SQLite3Adapter.new(db, logger, nil, config)
-    rescue Errno::ENOENT => e
-      if e.message.include?('No such file or directory')
-        raise ActiveRecord::NoDatabaseError
-      else
-        raise
-      end
-    end
-  end
-end
-
 require 'gb_dispatch/active_record_patch'
 
 FIXTURES_DIR              = File.join(File.dirname(__FILE__), 'fixtures')
 ActiveRecord::Base.logger = Logger.new("#{File.dirname(__FILE__)}/debug.log")
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory?cache=shared', pool: 5)
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:?cache=shared', pool: 5)
 
 GBDispatch.logger = Logger.new($stdout)
 Paperclip.options[:logger] = ActiveRecord::Base.logger
