@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] ||= 'test'
 require 'rubygems'
 require 'rspec'
 require 'active_record'
@@ -84,10 +85,6 @@ Paperclip::UriAdapter.register
 Paperclip::HttpUrlProxyAdapter.register
 
 Dir[File.join(ROOT, 'spec', 'support', '**', '*.rb')].sort.each { |f| require f }
-
-FakeRails.env = 'test'
-FakeRails.root = Pathname.new(ROOT).join('tmp')
-Rails = FakeRails
 
 RSpec.configure do |config|
   config.include Assertions
