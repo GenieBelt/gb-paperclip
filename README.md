@@ -25,13 +25,13 @@ end
 Run tests against a specific Rails version using Appraisal:
 
 ```bash
-bundle exec appraisal rails-8.1 rspec
+bundle exec appraisal rails-8-1 rspec
 ```
 
 Or set `BUNDLE_GEMFILE` directly for your session:
 
 ```bash
-export BUNDLE_GEMFILE=gemfiles/rails_8.1.gemfile
+export BUNDLE_GEMFILE=gemfiles/rails_8_1.gemfile
 bundle exec rspec
 ```
 
