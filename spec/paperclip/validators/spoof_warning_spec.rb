@@ -44,7 +44,7 @@ describe Paperclip::Validators::AttachmentSpoofWarningValidator do
     build_validator
     file = File.new(fixture_file('5k.png'), 'rb')
     @dummy.avatar.assign(file)
-    expect(Paperclip::MediaTypeSpoofDetector).to receive(:using).and_return(stub(:content_type_mismatch? => false))
+    expect(Paperclip::MediaTypeSpoofDetector).to receive(:using).and_return(double(content_type_mismatch?: false))
     @dummy.valid?
   end
 end

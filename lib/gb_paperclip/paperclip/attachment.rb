@@ -204,8 +204,7 @@ module Paperclip
           else
             ensure_is_created do
               @instance.lock!
-              @instance.update_attribute :processing, true
-              @instance.processed_styles ||= []
+              @instance.update_columns(processing: true, processed_styles: @instance.processed_styles || [])
             end
           end
         end
@@ -289,8 +288,7 @@ module Paperclip
               ensure_is_created do
                 instance.run_paperclip_callbacks(:async_post_process) do
                   instance.with_lock do
-                    instance.update_column :processing, false
-                    instance.update_column :processed_styles, @processed_styles
+                    instance.update_columns(processing: false, processed_styles: @processed_styles)
                     instance.reload
                   end
                 end

@@ -25,7 +25,7 @@ describe Paperclip::Validators::MediaTypeSpoofDetectionValidator do
 
     @validator.validate(@dummy)
 
-    expect(Dir.exists? 'tmp/quarantine').to be_truthy
+    expect(File.directory? 'tmp/quarantine').to be_truthy
     expect(Dir['tmp/quarantine/*_5k.pdf']).not_to be_empty
     file.close
   end

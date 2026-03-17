@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] ||= 'test'
 require 'rubygems'
 require 'rspec'
 require 'active_record'
@@ -33,39 +34,35 @@ $LOAD_PATH << File.join(ROOT, 'lib')
 $LOAD_PATH << File.join(ROOT, 'lib', 'gb_paperclip')
 require File.join(ROOT, 'lib', 'gb_paperclip.rb')
 
-# Fix rails bug with not creating in memory database with '?cache=shared' option
-module ActiveRecord
-  module ConnectionHandling # :nodoc:
-    def sqlite3_connection(config)
-      config = config.symbolize_keys
-
-      # Require database.
-      raise ArgumentError, 'No database file specified. Missing argument: database' unless config[:database]
-
-      # Allow database path relative to Rails.root, but only if the database
-      # path is not the special path that tells sqlite to build a database only
-      # in memory.
-      unless config[:database] =~ /:memory/
-        config[:database] = File.expand_path(config[:database], Rails.root) if defined?(Rails.root)
-        dirname = File.dirname(config[:database])
-        Dir.mkdir(dirname) unless File.directory?(dirname)
-      end
-
-      db = SQLite3::Database.new(
-        config[:database].to_s,
-        results_as_hash: true
-      )
-
-      if config[:timeout]
-        db.busy_timeout(ConnectionAdapters::SQLite3Adapter.type_cast_config_to_integer(config[:timeout]))
-      end
-
-      ConnectionAdapters::SQLite3Adapter.new(db, logger, nil, config)
-    rescue Errno::ENOENT => e
-      if e.message.include?('No such file or directory')
-        raise ActiveRecord::NoDatabaseError
-      else
-        raise
+if ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 2
+  require 'active_record/connection_adapters/sqlite3_adapter'
+  module ActiveRecord
+    module ConnectionHandling
+      def sqlite3_connection(config)
+        config = config.symbolize_keys
+        raise ArgumentError, 'No database file specified. Missing argument: database' unless config[:database]
+        unless config[:database] =~ /:memory/
+          config[:database] = File.expand_path(config[:database], Rails.root) if defined?(Rails.root)
+          dirname = File.dirname(config[:database])
+          Dir.mkdir(dirname) unless File.directory?(dirname)
+        end
+        db = SQLite3::Database.new(
+          config[:database].to_s,
+          results_as_hash: true,
+          flags: SQLite3::Constants::Open::READWRITE |
+                 SQLite3::Constants::Open::CREATE    |
+                 SQLite3::Constants::Open::URI
+        )
+        if config[:timeout]
+          db.busy_timeout(ConnectionAdapters::SQLite3Adapter.type_cast_config_to_integer(config[:timeout]))
+        end
+        ConnectionAdapters::SQLite3Adapter.new(db, logger, nil, config)
+      rescue Errno::ENOENT => e
+        if e.message.include?('No such file or directory')
+          raise ActiveRecord::NoDatabaseError
+        else
+          raise
+        end
       end
     end
   end
@@ -75,7 +72,7 @@ require 'gb_dispatch/active_record_patch'
 
 FIXTURES_DIR              = File.join(File.dirname(__FILE__), 'fixtures')
 ActiveRecord::Base.logger = Logger.new("#{File.dirname(__FILE__)}/debug.log")
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory?cache=shared', pool: 5)
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'file::memory:?cache=shared', pool: 5)
 
 GBDispatch.logger = Logger.new($stdout)
 Paperclip.options[:logger] = ActiveRecord::Base.logger
@@ -84,11 +81,6 @@ Paperclip::UriAdapter.register
 Paperclip::HttpUrlProxyAdapter.register
 
 Dir[File.join(ROOT, 'spec', 'support', '**', '*.rb')].sort.each { |f| require f }
-
-FakeRails.env = 'test'
-FakeRails.root = Pathname.new(ROOT).join('tmp')
-Rails = FakeRails
-ActiveSupport::Deprecation.silenced = true
 
 RSpec.configure do |config|
   config.include Assertions
@@ -103,7 +95,7 @@ RSpec.configure do |config|
     rebuild_model
   end
   config.after(:each) do
-    ActiveRecord::Base.clear_reloadable_connections!
+    ActiveRecord::Base.connection_handler.clear_reloadable_connections!
   end
   config.after(:all) do
     FileUtils.rm_r Pathname.new(ROOT).join('tmp')
