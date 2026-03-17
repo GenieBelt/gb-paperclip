@@ -2,7 +2,7 @@ PATH
   remote: ..
   specs:
     gb_paperclip (2.3.0)
-      gb_dispatch (>= 0.1.1)
+      gb_dispatch (>= 0.1.3)
       kt-paperclip (>= 6.0)
 
 GEM
@@ -315,8 +315,8 @@ GEM
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (1.2.3)
       reline
-    gb_dispatch (0.1.2)
-      concurrent-ruby (~> 1.0)
+    gb_dispatch (0.1.3)
+      concurrent-ruby (>= 1.0)
     generator_spec (0.10.0)
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)
@@ -441,6 +441,7 @@ GEM
       racc (~> 1.4)
     optimist (3.2.1)
     os (1.1.4)
+    ostruct (0.6.3)
     ovirt-engine-sdk (4.6.1)
       json (>= 1, < 3)
     parallel (1.27.0)
@@ -627,6 +628,7 @@ DEPENDENCIES
   generator_spec
   launchy
   nokogiri
+  ostruct
   rails (~> 8.1.0)
   railties
   rake
@@ -722,7 +724,7 @@ CHECKSUMS
   fog-xenserver (1.0.0) sha256=1fee6d26500fcaf89b1220008d440807acc9d4804b7a60b5f2b74cc820505855
   fog-xml (0.1.5) sha256=52b9fea10701461dd3eaf9d9839702169b418dbbf50426786b9b74fade373bd6
   formatador (1.2.3) sha256=19fa898133c2c26cdbb5d09f6998c1e137ad9427a046663e55adfe18b950d894
-  gb_dispatch (0.1.2) sha256=563a55a498df651221d93976bf26e4434f55972e8a381ca77e345d7b1a5d6c34
+  gb_dispatch (0.1.3) sha256=f590d360ec3f4600025724c27b33020360dca57a36685426e6dc6c1d4355a993
   gb_paperclip (2.3.0)
   generator_spec (0.10.0) sha256=4343152308dcfb30bba7583fc0e79acf8c626597686cfe3e9b168f6ab745b37a
   globalid (1.3.0) sha256=05c639ad6eb4594522a0b07983022f04aa7254626ab69445a0e493aa3786ff11
@@ -779,6 +781,7 @@ CHECKSUMS
   nokogiri (1.19.1-x86_64-linux-musl) sha256=4267f38ad4fc7e52a2e7ee28ed494e8f9d8eb4f4b3320901d55981c7b995fc23
   optimist (3.2.1) sha256=8cf8a0fd69f3aa24ab48885d3a666717c27bc3d9edd6e976e18b9d771e72e34e
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
+  ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   ovirt-engine-sdk (4.6.1) sha256=6eb7a849fe4393d76e7c70aa8ea988e1490c89a62c6f59f0ed3ebf7ff0ab6891
   parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
   parser (3.3.10.2) sha256=6f60c84aa4bdcedb6d1a2434b738fe8a8136807b6adc8f7f53b97da9bc4e9357

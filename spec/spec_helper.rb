@@ -34,17 +34,45 @@ $LOAD_PATH << File.join(ROOT, 'lib')
 $LOAD_PATH << File.join(ROOT, 'lib', 'gb_paperclip')
 require File.join(ROOT, 'lib', 'gb_paperclip.rb')
 
-database = if ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 2
-             'test.sqlite'
-           else
-             ':memory:?cache=shared'
-           end
+if ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 2
+  require 'active_record/connection_adapters/sqlite3_adapter'
+  module ActiveRecord
+    module ConnectionHandling
+      def sqlite3_connection(config)
+        config = config.symbolize_keys
+        raise ArgumentError, 'No database file specified. Missing argument: database' unless config[:database]
+        unless config[:database] =~ /:memory/
+          config[:database] = File.expand_path(config[:database], Rails.root) if defined?(Rails.root)
+          dirname = File.dirname(config[:database])
+          Dir.mkdir(dirname) unless File.directory?(dirname)
+        end
+        db = SQLite3::Database.new(
+          config[:database].to_s,
+          results_as_hash: true,
+          flags: SQLite3::Constants::Open::READWRITE |
+                 SQLite3::Constants::Open::CREATE    |
+                 SQLite3::Constants::Open::URI
+        )
+        if config[:timeout]
+          db.busy_timeout(ConnectionAdapters::SQLite3Adapter.type_cast_config_to_integer(config[:timeout]))
+        end
+        ConnectionAdapters::SQLite3Adapter.new(db, logger, nil, config)
+      rescue Errno::ENOENT => e
+        if e.message.include?('No such file or directory')
+          raise ActiveRecord::NoDatabaseError
+        else
+          raise
+        end
+      end
+    end
+  end
+end
 
 require 'gb_dispatch/active_record_patch'
 
 FIXTURES_DIR              = File.join(File.dirname(__FILE__), 'fixtures')
 ActiveRecord::Base.logger = Logger.new("#{File.dirname(__FILE__)}/debug.log")
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: database, pool: 5)
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'file::memory:?cache=shared', pool: 5)
 
 GBDispatch.logger = Logger.new($stdout)
 Paperclip.options[:logger] = ActiveRecord::Base.logger

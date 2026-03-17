@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     gb_paperclip (2.3.0)
-      gb_dispatch (>= 0.1.1)
+      gb_dispatch (>= 0.1.3)
       kt-paperclip (>= 6.0)
 
 GEM
@@ -276,8 +276,8 @@ GEM
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (1.2.3)
       reline
-    gb_dispatch (0.1.2)
-      concurrent-ruby (~> 1.0)
+    gb_dispatch (0.1.3)
+      concurrent-ruby (>= 1.0)
     generator_spec (0.10.0)
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)
@@ -640,7 +640,7 @@ CHECKSUMS
   fog-xenserver (1.0.0) sha256=1fee6d26500fcaf89b1220008d440807acc9d4804b7a60b5f2b74cc820505855
   fog-xml (0.1.5) sha256=52b9fea10701461dd3eaf9d9839702169b418dbbf50426786b9b74fade373bd6
   formatador (1.2.3) sha256=19fa898133c2c26cdbb5d09f6998c1e137ad9427a046663e55adfe18b950d894
-  gb_dispatch (0.1.2) sha256=563a55a498df651221d93976bf26e4434f55972e8a381ca77e345d7b1a5d6c34
+  gb_dispatch (0.1.3) sha256=f590d360ec3f4600025724c27b33020360dca57a36685426e6dc6c1d4355a993
   gb_paperclip (2.3.0)
   generator_spec (0.10.0) sha256=4343152308dcfb30bba7583fc0e79acf8c626597686cfe3e9b168f6ab745b37a
   google-apis-compute_v1 (0.142.0) sha256=7129f38209a1a628ea0297d996654dbec7d2adab1f5b13b40693a6448955e7f2
