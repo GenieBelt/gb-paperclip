@@ -20,6 +20,27 @@ end
 - [ImageMagick](https://imagemagick.org/) — image thumbnails and PDF thumbnails
 - [FFmpeg](https://ffmpeg.org/) — video thumbnails
 
+## Local Development
+
+Run tests against a specific Rails version using Appraisal:
+
+```bash
+bundle exec appraisal rails-8.1 rspec
+```
+
+Or set `BUNDLE_GEMFILE` directly for your session:
+
+```bash
+export BUNDLE_GEMFILE=gemfiles/rails_8.1.gemfile
+bundle exec rspec
+```
+
+Available gemfiles are in the `gemfiles/` directory. After adding or changing `Appraisals`, regenerate them with:
+
+```bash
+bundle exec appraisal install
+```
+
 ## Storage Backends
 
 ### S3

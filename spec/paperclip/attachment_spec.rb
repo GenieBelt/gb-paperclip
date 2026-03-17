@@ -23,11 +23,11 @@ describe Paperclip::Attachment do
       @attachment.queued_for_write[:test] = Paperclip.io_adapters.for(@file)
       GBDispatch.dispatch_async(:test) do
         @attachment.with_save_lock do
-          sleep(0.3)
+          sleep(0.02)
           async_flag = true
         end
       end
-      sleep(0.1)
+      sleep(0.001)
       GBDispatch.dispatch_sync(:save) do
         @dummy.save
       end
@@ -107,7 +107,7 @@ describe Paperclip::Attachment do
               after_save :take_nap
 
               def take_nap
-                sleep(rand)
+                sleep(0.015)
               end
             end
           end
@@ -120,7 +120,7 @@ describe Paperclip::Attachment do
             dummy.save!
           end
           GBDispatch.dispatch_sync(:process) do
-            sleep(0.1)
+            sleep(0.001)
             expect { dummy.avatar.processing(:test_style) }.not_to raise_error
           end
           wait_for :save
@@ -153,12 +153,12 @@ describe Paperclip::Attachment do
         @attachment.instance_variable_set :@processed_styles, [:foo, :bar]
         GBDispatch.dispatch_async(:test) do
           @attachment.with_save_lock do
-            sleep(0.3)
+            sleep(0.02)
             async_flag = true
           end
         end
         GBDispatch.dispatch_sync :save do
-          sleep 0.1
+          sleep(0.001)
           @attachment.send :save_processing_info
         end
         expect(async_flag).to eq true
@@ -203,7 +203,7 @@ describe Paperclip::Attachment do
               after_save :take_nap
 
               def take_nap
-                sleep(rand)
+                sleep(0.015)
               end
             end
           end
@@ -219,16 +219,13 @@ describe Paperclip::Attachment do
             end
           end
           GBDispatch.dispatch_sync(:process) do
-            sleep(0.1)
+            sleep(0.001)
             dummy.avatar.instance_variable_set :@processed_styles, [:foo, :bar]
             expect { dummy.avatar.send :save_processing_info }.not_to raise_error
           end
           wait_for :save
           expect(dummy.avatar.saved[:original]).not_to be_nil
           expect(status).to be_truthy
-          if dummy.changes.keys.any?
-            puts dummy.changes
-          end
           expect(dummy.changes.keys).to eq []
           expect(dummy.reload.processing).to eq false
           expect(dummy.processed_styles).to eq [:foo, :bar]
